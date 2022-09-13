@@ -6,8 +6,8 @@ You can use it to perform elastic forward modelling and backpropagation, so it c
 
 ## Quick Example
 
-
-import torch
+```python
+import torch 
 import numpy as np
 import scipy.io as sio
 import scipy
@@ -206,3 +206,5 @@ maxiter = nIter
 optimize.minimize(obj.fun, obj.x0, method='L-BFGS-B', jac=obj.jac, bounds=obj.bounds,
   tol=None, callback=save_prog, options={'disp': True, 'iprint': 101,
   'gtol': 1e-012, 'maxiter': maxiter, 'ftol': 1e-12, 'maxcor': 30, 'maxfun': 15000})
+
+```
