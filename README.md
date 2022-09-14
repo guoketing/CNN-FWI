@@ -4,7 +4,7 @@ CNN-EFWI is a tool for elastic full waveform inversion at the framework of PyTor
 You can use it to perform elastic forward modelling and backpropagation, so it can simulate wave propagation to generate synthetic data, invert for the elastic parameters such as P-wave velocity, S-wave velocity and density.
 
 
-## Quick Example
+## Quick Example of conventional EFWI, which is based on the code in https://github.com/lidongzh/TorchFWI
 
 ```python
 import torch 
