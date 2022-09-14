@@ -1,0 +1,39 @@
+ninja_required_version = 1.3
+cxx = cl
+nvcc = C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin\nvcc
+
+cflags = -DTORCH_EXTENSION_NAME=FWI -DTORCH_API_INCLUDE_EXTENSION_H "-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\include" -ID:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\rapidjson -ID:\software\anaconda\lib\site-packages\torch\include -ID:\software\anaconda\lib\site-packages\torch\include\torch\csrc\api\include -ID:\software\anaconda\lib\site-packages\torch\include\TH -ID:\software\anaconda\lib\site-packages\torch\include\THC "-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\include" -ID:\software\anaconda\Include -D_GLIBCXX_USE_CXX11_ABI=0 /MD /wd4819 /wd4251 /wd4244 /wd4267 /wd4275 /wd4018 /wd4190 /EHsc "-O3 -fopenmp -lpthread"
+post_cflags = 
+cuda_cflags = -Xcudafe --diag_suppress=dll_interface_conflict_dllexport_assumed -Xcudafe --diag_suppress=dll_interface_conflict_none_assumed -Xcudafe --diag_suppress=field_without_dll_interface -Xcudafe --diag_suppress=base_class_has_different_dll_interface -Xcompiler /EHsc -Xcompiler /wd4190 -Xcompiler /wd4018 -Xcompiler /wd4275 -Xcompiler /wd4267 -Xcompiler /wd4244 -Xcompiler /wd4251 -Xcompiler /wd4819 -Xcompiler /MD -DTORCH_EXTENSION_NAME=FWI -DTORCH_API_INCLUDE_EXTENSION_H "-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\include" -ID:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\rapidjson -ID:\software\anaconda\lib\site-packages\torch\include -ID:\software\anaconda\lib\site-packages\torch\include\torch\csrc\api\include -ID:\software\anaconda\lib\site-packages\torch\include\TH -ID:\software\anaconda\lib\site-packages\torch\include\THC "-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\include" -ID:\software\anaconda\Include -D_GLIBCXX_USE_CXX11_ABI=0 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_75,code=compute_75 -gencode=arch=compute_75,code=sm_75
+cuda_post_cflags = 
+ldflags = /DLL "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/lib/x64/nvrtc.lib" "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/lib/x64/cuda.lib" "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/lib/x64/cudart.lib" "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/lib/x64/cufft.lib" c10.lib c10_cuda.lib torch_cpu.lib torch_cuda.lib -INCLUDE:?warp_size@cuda@at@@YAHXZ torch.lib /LIBPATH:D:\software\anaconda\lib\site-packages\torch\lib torch_python.lib /LIBPATH:D:\software\anaconda\libs "/LIBPATH:C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\lib/x64" cudart.lib
+
+rule compile
+  command = cl /showIncludes $cflags -c $in /Fo$out $post_cflags
+  deps = msvc
+
+rule cuda_compile
+  depfile = $out.d
+  deps = gcc
+  command = $nvcc --generate-dependencies-with-compile --dependency-output $out.d $cuda_cflags -c $in -o $out $cuda_post_cflags
+
+rule link
+  command = "D$:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\Hostx86\x86/link.exe" $in /nologo $ldflags /out:$out
+
+build Torch_Fwi.o: compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\Torch_Fwi.cpp
+build Parameter.o: compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\Parameter.cpp
+build libCUFD.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\libCUFD.cu
+build el_stress.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\el_stress.cu
+build el_velocity.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\el_velocity.cu
+build el_stress_adj.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\el_stress_adj.cu
+build el_velocity_adj.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\el_velocity_adj.cu
+build Model.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\Model.cu
+build Cpml.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\Cpml.cu
+build utilities.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\utilities.cu
+build Src_Rec.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\Src_Rec.cu
+build Boundary.cuda.o: cuda_compile D$:\python_program\TorchFWI\fwq\Ops\FWI\Src_old\Boundary.cu
+
+build FWI.pyd: link Torch_Fwi.o Parameter.o libCUFD.cuda.o el_stress.cuda.o el_velocity.cuda.o el_stress_adj.cuda.o el_velocity_adj.cuda.o Model.cuda.o Cpml.cuda.o utilities.cuda.o Src_Rec.cuda.o Boundary.cuda.o
+
+default FWI.pyd
+
