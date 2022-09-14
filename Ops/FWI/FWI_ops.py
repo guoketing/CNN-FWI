@@ -9,7 +9,7 @@ import fwi_utils as ft
 from collections import OrderedDict
 
 abs_path = os.path.dirname(os.path.abspath(__file__))
-path = os.path.join(abs_path, 'Src')
+path = os.path.join(abs_path, 'Src_old')
 os.makedirs(path+'/build/', exist_ok=True)
 
 def load_fwi(path):
