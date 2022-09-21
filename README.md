@@ -8,6 +8,6 @@ In addition, I reparametric the models by neural network to improve the robust o
 
 The base code of the repository is from https://github.com/lidongzh/TorchFWI
 
-## examples of CNN-FWI is in the "example" directory
+## examples of CNN-FWI is in the "src" directory
 
 Thank you for your star.
