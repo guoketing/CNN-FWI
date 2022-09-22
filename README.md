@@ -1,6 +1,6 @@
 # CNN-FWI
 
-CNN-EFWI is a repository for elastic full waveform inversion at the framework of PyTorch. 
+CNN-EFWI is a repository for full waveform inversion at the framework of PyTorch. 
 
 You can use it to perform acoustic or elastic forward modelling and backpropagation in 2D or 3D case, it can simulate wave propagation to generate seismic synthetic data, invert for the acoustic/elastic parameters of undergrond.
 
